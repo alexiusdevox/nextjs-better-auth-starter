@@ -1,0 +1,32 @@
+"use client";
+
+import { signIn } from "@/server/users";
+import { useState } from "react";
+
+export default function LoginButton() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = async () => {
+    if (isLoading) return; // Previene doppi clic
+    
+    setIsLoading(true);
+    try {
+      await signIn();
+      // Non è necessario aggiungere un redirect qui perché
+      // la funzione signIn server-side gestirà già il redirect
+    } catch (error) {
+      console.error("Login failed:", error);
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <button
+      className={`bg-neutral-700 text-white p-2 rounded-md ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+      onClick={handleLogin}
+      disabled={isLoading}
+    >
+      {isLoading ? "Accesso in corso..." : "Sign In"}
+    </button>
+  );
+}
